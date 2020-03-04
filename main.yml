@@ -1,6 +1,7 @@
 - hosts: localvm
   name: start with update
   become: yes 
+  gather_facts: no
   tasks:
     - name: yum update
       yum:

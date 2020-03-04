@@ -25,5 +25,5 @@ Requirements
 For running the playbook, type the below command:
 
 ```bash
-ansible-playbook main.yml -i development
+ansible-playbook main.yml -i development --ask-vault-pass
 ```

@@ -3,5 +3,5 @@ localvm
 
 [box:vars]
 ansible_connection=ssh
-ansible_user=ezimelewicz
-ansible_ssh_pass=marlobr
+ansible_user={{ localvm_user }}
+ansible_ssh_pass={{ localvm_password }}
