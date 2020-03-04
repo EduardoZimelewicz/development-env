@@ -1,0 +1,8 @@
+- hosts: localvm
+  name: start with update
+  become: yes 
+  tasks:
+    - name: yum update
+      yum:
+        name: '*'
+        state: latest

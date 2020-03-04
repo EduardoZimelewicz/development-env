@@ -1,0 +1,7 @@
+[box]
+localvm
+
+[box:vars]
+ansible_connection=ssh
+ansible_user=ezimelewicz
+ansible_ssh_pass=marlobr
