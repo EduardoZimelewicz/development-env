@@ -22,3 +22,14 @@
       yum:
         name: vim
         state: latest
+    
+    - name: install git
+      yum:
+        name: git
+        state: latest  
+    
+    - name: install maven
+      yum:
+        name: maven
+        state: latest
+  
