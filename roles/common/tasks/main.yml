@@ -1,0 +1,31 @@
+- name: common packages installation
+  block:
+    - name: yum update
+      yum:
+        name: '*'
+        state: latest
+
+    - name: install openjdk 8
+      yum:
+        name: java-1.8.0-openjdk
+        state: latest
+    
+    - name: install net-tools
+      yum:
+        name: net-tools
+        state: latest
+    
+    - name: install vim
+      yum:
+        name: vim
+        state: latest
+    
+    - name: install git
+      yum:
+        name: git
+        state: latest  
+    
+    - name: install maven
+      yum:
+        name: maven
+        state: latest

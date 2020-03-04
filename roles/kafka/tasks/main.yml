@@ -1,0 +1,9 @@
+- name: kafka installation
+  block:
+    - name: check kafka info
+      shell: |
+        yum info kafka
+      register: kafka_info_pkg
+      failed_when: false
+    
+    - debug: var=kafka_info_pkg
