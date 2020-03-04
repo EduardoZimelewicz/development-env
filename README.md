@@ -27,3 +27,9 @@ For running the playbook, type the below command:
 ```bash
 ansible-playbook main.yml -i development --ask-vault-pass
 ```
+
+For linting the playbook, type the below command:
+
+```bash
+ansible-lint *.yml
+```
