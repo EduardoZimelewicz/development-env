@@ -15,3 +15,26 @@
       yum:
         name: jenkins
         state: latest
+    
+    - name: add firewall rule exception for jenkins
+      firewalld:
+        service: jenkins
+        permanent: yes
+        state: enabled
+    
+    - name: add firewall rule exception for port 8080
+      firewalld:
+        port: 8080/tcp
+        permanent: yes
+        state: enabled
+    
+    - name: Reload firewalld service
+      service:
+        name: firewalld
+        state: reloaded
+    
+    - name: Restart Jenkins service
+      service:
+        name: jenkins
+        state: restarted
+  
