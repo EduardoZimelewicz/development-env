@@ -4,28 +4,16 @@
       yum:
         name: '*'
         state: latest
-
-    - name: install openjdk 8
-      yum:
-        name: java-1.8.0-openjdk
-        state: latest
     
-    - name: install net-tools
+    - name: install needed applications
       yum:
-        name: net-tools
+        name: "{{ application }}"
         state: latest
-    
-    - name: install vim
-      yum:
-        name: vim
-        state: latest
-    
-    - name: install git
-      yum:
-        name: git
-        state: latest  
-    
-    - name: install maven
-      yum:
-        name: maven
-        state: latest
+      loop:
+        - java-1.8.0-openjdk
+        - net-tools
+        - vim
+        - git
+        - maven
+      loop_control:
+        loop_var: application
