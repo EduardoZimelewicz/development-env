@@ -1,9 +1,34 @@
+- name: Include vars from kafka
+  include_vars:
+    file: ../vars/vault.yml
+
 - name: kafka installation
   block:
-    - name: check kafka info
-      shell: |
-        yum info kafka
-      register: kafka_info_pkg
-      failed_when: false
+    - name: create kafka user
+      user:
+        name: kafka
+        home: /home/kafka
+        shell: /bin/bash
+        password: "{{ kafka_user_pass }}"
     
-    - debug: var=kafka_info_pkg
+    - name: create Downloads directory
+      file:
+        path: /home/kafka/Downloads
+        owner: kafka
+        group: kafka
+        state: directory
+    
+    - name: download kafka
+      get_url:
+        url: https://www.apache.org/dist/kafka/2.1.1/kafka_2.11-2.1.1.tgz
+        owner: kafka
+        group: kafka
+        dest: /home/kafka/Downloads/kafka.tgz
+        
+    - name: extract kafka files
+      unarchive:
+        src: /home/kafka/Downloads/kafka.tgz
+        owner: kafka
+        group: kafka
+        dest: /home/kafka
+
