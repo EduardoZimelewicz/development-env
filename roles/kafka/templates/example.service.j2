@@ -1,0 +1,22 @@
+[Unit]
+{% if service_name == 'zookeeper' %}
+Requires=network.target remote-fs.target
+After=network.target remote-fs.target
+{% elif service_name == 'kafka' %}
+Requires=zookeeper.service
+After=zookeeper.service
+{% endif %}
+
+[Service]
+Type=simple
+User=kafka
+{% if service_name == 'zookeeper' %}
+ExecStart=/home/kafka/kafka_2.11-2.1.1/bin/{{ service_name }}-server-start.sh /home/kafka/kafka_2.11-2.1.1/config/{{ service_name }}.properties
+{% elif service_name == 'kafka' %}
+ExecStart=/bin/sh -c '/home/kafka/kafka_2.11-2.1.1/bin/{{ service_name }}-server-start.sh /home/kafka/kafka_2.11-2.1.1/config/server.properties > /home/kafka/kafka_2.11-2.1.1/kafka.log 2>&1'
+{% endif %}
+ExecStop=/home/kafka/kafka_2.11-2.1.1/bin/{{ service_name }}-server-stop.sh
+Restart=on-abnormal
+
+[Install]
+WantedBy=multi-user.target

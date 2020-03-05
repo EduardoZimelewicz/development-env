@@ -9,8 +9,13 @@
         name: kafka
         home: /home/kafka
         shell: /bin/bash
-        password: "{{ kafka_user_pass }}"
-    
+        password: "{{ kafka_user_pass | password_hash('sha256') }}"
+      
+    - name: lock kafka user
+      user:
+        name: kafka
+        password_lock: yes
+
     - name: create Downloads directory
       file:
         path: /home/kafka/Downloads
@@ -24,11 +29,36 @@
         owner: kafka
         group: kafka
         dest: /home/kafka/Downloads/kafka.tgz
-        
+      register: kafa_result
+      retries: 5
+      delay: 5
+      until: kafa_result is succeeded
+    
     - name: extract kafka files
       unarchive:
         src: /home/kafka/Downloads/kafka.tgz
         owner: kafka
         group: kafka
-        dest: /home/kafka
+        dest: /home/kafka/
+        remote_src: yes
+
+    - name: enable topic deletion on kafka
+      lineinfile:
+        path: /home/kafka/kafka_2.11-2.1.1/config/server.properties
+        line: "delete.topic.enable = true"
+        insertafter: EOF
+    
+    - name: create systemd service files
+      include_tasks: create_service.yml
+      loop:
+        - kafka
+        - zookeeper
+      loop_control:
+        loop_var: service_name
+    
+    - name: start kafka service
+      service:
+        name: kafka
+        state: started
+
 
