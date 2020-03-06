@@ -48,6 +48,20 @@
         line: "delete.topic.enable = true"
         insertafter: EOF
     
+    - name: replace listeners url on kafka
+      lineinfile:
+        path: /home/kafka/kafka_2.11-2.1.1/config/server.properties
+        regexp: '^listeners=PLAINTEXT://:9092'
+        insertafter: '^#listeners=PLAINTEXT://:9092'
+        line: 'listeners=PLAINTEXT://{{ ansible_enp0s3.ipv4.address }}:9092'
+    
+    - name: replace advertised url on kafka
+      lineinfile:
+        path: /home/kafka/kafka_2.11-2.1.1/config/server.properties
+        regexp: '^advertised.listeners=PLAINTEXT://your.host.name:9092'
+        insertafter: '^#advertised.listeners=PLAINTEXT://your.host.name:9092'
+        line: 'advertised.listeners=PLAINTEXT://{{ ansible_enp0s3.ipv4.address }}:9092'
+    
     - name: create systemd service files
       include_tasks: create_service.yml
       loop:
@@ -55,6 +69,33 @@
         - zookeeper
       loop_control:
         loop_var: service_name
+
+    - name: add firewall rule file for kafka
+      copy:
+        src: kafka.xml
+        dest: /etc/firewalld/services/
+        
+    - name: Reload firewalld service
+      service:
+        name: firewalld
+        state: reloaded
+
+    - name: add kafka firewall exception
+      firewalld:
+        service: kafka
+        permanent: yes
+        state: enabled
+
+    - name: add firewall rule exception for port 9092
+      firewalld:
+        port: 9092/tcp
+        permanent: yes
+        state: enabled
+    
+    - name: Reload firewalld service
+      service:
+        name: firewalld
+        state: reloaded
     
     - name: start kafka service
       service:
