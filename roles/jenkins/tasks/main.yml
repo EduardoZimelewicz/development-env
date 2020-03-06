@@ -33,6 +33,16 @@
         name: firewalld
         state: reloaded
     
+    - name: add jenkins user to sudoers
+      lineinfile:
+        path: /etc/sudoers
+        line: "jenkins      ALL=(ALL)  NOPASSWD: ALL"
+        insertafter: EOF
+
+    - name: create user for spring-boot applications
+      user:
+        name: bootapp
+        
     - name: Restart Jenkins service
       service:
         name: jenkins
